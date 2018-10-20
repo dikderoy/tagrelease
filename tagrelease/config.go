@@ -1,6 +1,7 @@
 package tagrelease
 
 import (
+	"fmt"
 	log "github.com/sirupsen/logrus"
 	flag "github.com/spf13/pflag"
 	"github.com/spf13/viper"
@@ -8,55 +9,58 @@ import (
 )
 
 type Config struct {
+	Log struct {
+		Debug bool
+	}
 	Branches struct {
 		Master []string
 		Trunk  []string
 	}
-	Log struct {
-		Level  string
-		Colors bool
+	Strategy struct {
+		Format    string
+		Increment string
 	}
+	WorkDir string
+	Output  string
 }
 
 var GlobalConfig Config
 
-var configEnvPrefix string
-
-func fullEnvVarName(name string) string {
-	if configEnvPrefix != "" {
-		name = configEnvPrefix + "_" + name
-	}
-	return name
-}
-
-func defineConfigValue(key string, defaultValue interface{}, envVarName string) {
-	viper.SetDefault(key, defaultValue)
-	viper.BindEnv(key, fullEnvVarName(envVarName))
-}
-
 func DefineConfig() {
 	viper.SetTypeByDefaultValue(true)
-	defineConfigValue("Log.Level", "info", "LOG_LEVEL")
-	viper.AutomaticEnv()
 
-}
+	flag.StringSlice("rc", []string{"master"},
+		"provide list of branches recognized as mainstream,"+
+			" all releases on these branches will be marked as RC (release candidate),"+
+			" except tagged ones")
+	viper.BindPFlag("Branches.Master", flag.Lookup("rc"))
 
-func DefineCommandLineConfig() {
-	flag.StringVar(
-		&configEnvPrefix, "env-prefix", "BDZ",
-		"redefine env prefix for conflicting environments",
-	)
-	viper.SetEnvPrefix(configEnvPrefix)
+	flag.StringSlice("beta", []string{"trunk"},
+		"provide list of branches recognized as trunked,"+
+			" all releases on these branches will be marked as B (beta), except tagged ones")
+	viper.BindPFlag("Branches.Trunk", flag.Lookup("beta"))
 
-	flag.String("bin", "", "binary name to run as supervised process")
-	viper.BindPFlag("process.name", flag.Lookup("bin"))
+	flag.StringP("format", "f", FormatRelease,
+		fmt.Sprintf("select output format: %v", FormatList))
+	viper.BindPFlag("Strategy.Format", flag.Lookup("format"))
 
-	flag.StringSlice("args", []string{}, "program arguments to pass at launch time")
-	viper.BindPFlag("process.args", flag.Lookup("args"))
+	flag.StringP("increment", "i", StrategyUpstream,
+		fmt.Sprintf("select increment strategy: %v", StrategyList))
+	viper.BindPFlag("Strategy.Increment", flag.Lookup("increment"))
+
+	flag.StringP("workdir", "d", ".",
+		"select workdir to look for repository")
+	viper.BindPFlag("WorkDir", flag.Lookup("workdir"))
+
+	flag.StringP("output", "o", "-",
+		"select output target, default is stdout")
+	viper.BindPFlag("Output", flag.Lookup("output"))
+
+	flag.Bool("debug", false, "enable debug output (to stderr)")
+	viper.BindPFlag("Log.Debug", flag.Lookup("debug"))
 }
 
 func LoadConfig() {
-	DefineConfig()
 	err := viper.Unmarshal(&GlobalConfig)
 	if err != nil {
 		log.WithError(err).Fatal("failed to load configuration")
@@ -65,15 +69,10 @@ func LoadConfig() {
 
 func InitLogger() {
 	log.SetOutput(os.Stdout)
-	level, err := log.ParseLevel(GlobalConfig.Log.Level)
-	if err != nil {
-		log.WithError(err).
-			WithField("input", GlobalConfig.Log.Level).
-			Panic("cannot determine log level")
+	if GlobalConfig.Log.Debug {
+		log.SetLevel(log.DebugLevel)
 	}
-	log.SetLevel(level)
 	log.SetFormatter(&log.TextFormatter{
-		ForceColors:            GlobalConfig.Log.Colors,
 		DisableLevelTruncation: true,
 	})
 }

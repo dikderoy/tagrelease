@@ -8,12 +8,8 @@ import (
 
 func TestMain(m *testing.M) {
 	flag.Parse()
-	configEnvPrefix = "TR"
 
-	DefineConfig()
-	LoadConfig()
-
-	GlobalConfig.Log.Level = "debug"
+	GlobalConfig.Log.Debug = true
 	InitLogger()
 
 	os.Exit(m.Run())

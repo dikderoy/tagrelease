@@ -15,8 +15,7 @@ func (git *GitAdapter) Describe() (o string) {
 	bo, err := exec.Command("git", "describe", "--tags").Output()
 	if err != nil {
 		logrus.WithError(err).Debug("no output from describe")
-		//o = "0.0.0"
-		o = "0.8.1-84-g57a182a"
+		o = "0.0.0"
 	} else {
 		o = string(bo)
 	}
@@ -28,27 +27,35 @@ var reGitDescription = regexp.MustCompile(
 	`^((?P<major>\d+).(?P<minor>\d+)(.(?P<patch>\d+))?)(-(?P<diff>\d+)-(?P<ref>[0-9A-Za-z]+))?$`,
 )
 
-func (git *GitAdapter) Version() *Version {
-	output := git.Describe()
-	matches := reGitDescription.FindAllStringSubmatch(output, -1)
+func (git *GitAdapter) evaluate(desc string) *Version {
+	matches := reGitDescription.FindAllStringSubmatch(desc, -1)
 	logrus.WithField("matches", matches).Debug("matches")
 	if matches == nil {
 		return &Version{}
 	}
 
-	major, _ := strconv.Atoi(matches[0][2])
-	minor, _ := strconv.Atoi(matches[0][3])
-	patch, _ := strconv.Atoi(matches[0][5])
-	diff, _ := strconv.Atoi(matches[0][7])
+	var major, minor, patch, diff int
+	major, _ = strconv.Atoi(matches[0][2])
+	minor, _ = strconv.Atoi(matches[0][3])
+	if matches[0][4] != "" { // we need to know if patch is not defined
+		patch, _ = strconv.Atoi(matches[0][5])
+	} else {
+		patch = -1
+	}
+	diff, _ = strconv.Atoi(matches[0][7]) //will return 0 on error (we okay with that)
 
 	return &Version{
 		major:  major,
 		minor:  minor,
 		patch:  patch,
 		diff:   diff,
-		rev:    matches[0][8],
+		rev:    matches[0][8], //empty value is "" which is exactly what we need
 		suffix: "",
 	}
+}
+
+func (git *GitAdapter) Version() *Version {
+	return git.evaluate(git.Describe())
 }
 
 func (git *GitAdapter) Revision() (o string, err error) {
