@@ -47,7 +47,7 @@ func main() {
 	flag.Parse()
 	tagrelease.LoadConfig()
 	tagrelease.InitLogger()
-	logrus.WithField("config", tagrelease.GlobalConfig).Info("configured")
+	logrus.WithField("config", tagrelease.GlobalConfig).Debug("configured")
 
 	rootCommand()
 }

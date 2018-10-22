@@ -1,7 +1,7 @@
 package tagrelease
 
 import (
-	"github.com/sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	"os/exec"
 	"regexp"
 	"strconv"
@@ -14,12 +14,12 @@ type GitAdapter struct {
 func (git *GitAdapter) Describe() (o string) {
 	bo, err := exec.Command("git", "describe", "--tags").Output()
 	if err != nil {
-		logrus.WithError(err).Debug("no output from describe")
+		log.WithError(err).Debug("no output from describe")
 		o = "0.0.0"
 	} else {
-		o = string(bo)
+		o = strings.TrimSpace(string(bo))
 	}
-	logrus.WithField("out", o).Debug("git describe output")
+	log.WithField("out", o).Debug("git describe output")
 	return o
 }
 
@@ -29,7 +29,7 @@ var reGitDescription = regexp.MustCompile(
 
 func (git *GitAdapter) evaluate(desc string) *Version {
 	matches := reGitDescription.FindAllStringSubmatch(desc, -1)
-	logrus.WithField("matches", matches).Debug("matches")
+	log.WithField("matches", matches).Debug("matches")
 	if matches == nil {
 		return &Version{}
 	}
@@ -63,7 +63,9 @@ func (git *GitAdapter) Revision() (o string, err error) {
 	if err != nil {
 		return "", err
 	}
-	return strings.TrimSpace(string(bo)), nil
+	o = string(bo)
+	log.WithField("out", o).Debug("git rev-parse HEAD output")
+	return strings.TrimSpace(o), nil
 }
 
 func (git *GitAdapter) Branch() (o string, err error) {
@@ -71,5 +73,7 @@ func (git *GitAdapter) Branch() (o string, err error) {
 	if err != nil {
 		return "", err
 	}
-	return strings.TrimSpace(string(bo)), nil
+	o = string(bo)
+	log.WithField("out", o).Debug("git rev-parse --abbrev-ref HEAD output")
+	return strings.TrimSpace(o), nil
 }

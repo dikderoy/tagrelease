@@ -1,6 +1,6 @@
 package tagrelease
 
-import "github.com/sirupsen/logrus"
+import log "github.com/sirupsen/logrus"
 
 type Adapter interface {
 	Version() *Version
@@ -33,7 +33,9 @@ var empty = Version{}
 
 func (c *Converter) Detect() (v *Version) {
 	v = c.adapter.Version()
+	log.WithField("version", v).Debug("version detected")
 	if *v == empty {
+		log.Debug("empty version detected, use first release strategy")
 		v.minor = 1
 		return
 	}
@@ -53,20 +55,23 @@ func among(elem string, stack []string) bool {
 
 func (c *Converter) ReleaseKind() string {
 	branch, _ := c.adapter.Branch()
+	var kind string
 	switch {
 	case among(branch, GlobalConfig.Branches.Master):
-		return "rc"
+		kind = "rc"
 	case among(branch, GlobalConfig.Branches.Trunk):
-		return "b"
+		kind = "b"
 	default:
-		return "a"
+		kind = "a"
 	}
+	log.WithField("kind", kind).Debug("calculated release kind")
+	return kind
 }
 
 func (c *Converter) Revision() string {
 	r, err := c.adapter.Revision()
 	if err != nil {
-		logrus.WithError(err).Debug("failed to detect revision")
+		log.WithError(err).Debug("failed to detect revision")
 	}
 	return r
 }

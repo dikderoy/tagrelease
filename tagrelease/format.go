@@ -116,33 +116,3 @@ func FormatFactory(fe *Formatter, format string) func() string {
 		return nil
 	}
 }
-
-//if __name__ == '__main__':
-//    parser = argparse.ArgumentParser(
-//        description='''
-//        GitAppVersionFetcher
-//        uses git info to create a version/release identifier of form: x.y.z[(a|b|rc)N+gitref]
-//        '''
-//    )
-//    parser.add_argument('--debug', action='store_true')
-//    parser.add_argument('-d', '--dir', type=str, dest='work_dir', help='pick git info from this dir')
-//    parser.add_argument('-o', '--out', type=str, dest='output', default='version.info',
-//                        help='where to output version identifier, use `-` for stdout')
-//    parser.add_argument('-f', '--format', type=str, dest='format', default='release',
-//                        choices=('semver', 'major', 'short', 'release', 'revision'),
-//                        help='version format')
-//    args = parser.parse_args()
-//    if args.debug:
-//        logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
-//
-//    if args.work_dir is not None:
-//        logger.info('using cwd [%s]', args.work_dir)
-//        os.chdir(args.work_dir)
-//    forge = VersionForger()
-//    v = getattr(forge, args.format)
-//    if args.output == '-':
-//        sys.stdout.write(v)
-//    else:
-//        logger.info('compiled file [%s] with [%s]', args.output, v)
-//        with open(args.output, 'w') as fd:
-//            fd.write(v)

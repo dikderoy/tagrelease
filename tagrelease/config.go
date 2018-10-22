@@ -71,6 +71,7 @@ func InitLogger() {
 	log.SetOutput(os.Stdout)
 	if GlobalConfig.Log.Debug {
 		log.SetLevel(log.DebugLevel)
+		log.Debug("enabled debug logging")
 	}
 	log.SetFormatter(&log.TextFormatter{
 		DisableLevelTruncation: true,
