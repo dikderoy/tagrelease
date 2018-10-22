@@ -15,6 +15,7 @@ func TestGitAdapter_Version(t *testing.T) {
 		"0.0":               {0, 0, -1, 0, "", ""},
 		"1.0-1-g57a182a":    {1, 0, -1, 1, "g57a182a", ""},
 		"1.0.0-0-g57a182a":  {1, 0, 0, 0, "g57a182a", ""},
+		"v1.0.0-0-g57a182a": {1, 0, 0, 0, "g57a182a", ""},
 	}
 
 	for k, expected := range variants {

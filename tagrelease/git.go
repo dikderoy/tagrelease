@@ -24,7 +24,7 @@ func (git *GitAdapter) Describe() (o string) {
 }
 
 var reGitDescription = regexp.MustCompile(
-	`^((?P<major>\d+).(?P<minor>\d+)(.(?P<patch>\d+))?)(-(?P<diff>\d+)-(?P<ref>[0-9A-Za-z]+))?$`,
+	`^(v?(?P<major>\d+).(?P<minor>\d+)(.(?P<patch>\d+))?)(-(?P<diff>\d+)-(?P<ref>[0-9A-Za-z]+))?$`,
 )
 
 func (git *GitAdapter) evaluate(desc string) *Version {
