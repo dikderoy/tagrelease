@@ -6,7 +6,7 @@ jobs:
   include:
   - name: test
     stage: test
-    language: golang
+    language: go
     go:
     - "1.11.x"
     before_install:
@@ -26,7 +26,7 @@ jobs:
 
   - name: build static and deploy
     stage: build
-    language: golang
+    language: go
     before_install:
     - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
     install:
