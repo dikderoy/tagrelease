@@ -1,0 +1,12 @@
+language: go
+go:
+  - "1.11.x"
+cache:
+  directories:
+  - vendor/
+before_install:
+  - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+before_script:
+  - dep ensure
+script:
+  - go test -v ./...
