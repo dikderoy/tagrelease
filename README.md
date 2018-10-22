@@ -1,6 +1,11 @@
 TagRelease
 ==========
 
+[![Build Status](https://travis-ci.org/dikderoy/tagrelease.svg?branch=master)](https://travis-ci.org/dikderoy/tagrelease)
+[![Maintainability](https://api.codeclimate.com/v1/badges/c0a9e573b147851c927a/maintainability)](https://codeclimate.com/github/dikderoy/tagrelease/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/c0a9e573b147851c927a/test_coverage)](https://codeclimate.com/github/dikderoy/tagrelease/test_coverage)
+
+
 `tagrelease` is a simple tool to generate release/build
 identifiers from git tag names in an automated way.
 
