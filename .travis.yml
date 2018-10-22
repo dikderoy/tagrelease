@@ -41,6 +41,7 @@ jobs:
       - vendor/
     deploy:
       provider: releases
+      skip_cleanup: true
       api_key:
         secure: GYNxBSAuVUzWaHAH7bL9fi0H4F3L3Ap9jfunze/1Ei7r8WLokmU4PmpCmFqG71rdR+tNE9UFL56rGj9PeFRuGLkOAg+socNh0Gan9kwzgr/QRD2kHwL93d76bjcyktbr4bsK1rlunxHiPyjioUAp1qNfkisIoAYGa2zPVEBMmTD4vFydGgL1VA/dp1iGkHt2Hzmrq9P7tZ92fkRvaXFP7p7BTsD2G6l7GrMNwNNFNT1m+/Ie4d7zqnQR/xdGD/+6U+VIBLHdpIyM/jYIG+k5Xn8YBDL47PYFcz47u74g1PxXK5Wt8vi20PUZCJu1lPl2JfqjNb7S70ua3acSl3J55VWo3pgT3BBJysJriVUtHBlpYPA6pMmTzzyuEoo8N5dLbe7PH90TA08sC97dNXR5FA8DG/EKxPbd8jViznOoO/c9k8yQmASUHmLa6WJ8DIULSjzblH3jPpL8kw2OP+kxGFY+5xxl79qdyP3P5+V5mskE4aZn3YxltN9BoDSVSCx0hMb6oNeuuMB3kkkqwdFgdK52K2oQS7ujLY5zKlJosrQ1d2dKUcvkktkigoju/V7D982JAgKVsE6aOk1yXTdlRc1pT017lvcyOg5b3m7n5QOVPwXFowtO1CDGd0AxQ2CQJTTxLtm4ZpsCuf7lH8ZkRjuATxKiDRuOllJSxwWUuGM=
       file: build/tagrelease
