@@ -1,5 +1,3 @@
-language: go
-
 stages:
 - test
 - build
@@ -8,6 +6,7 @@ jobs:
   include:
   - name: test
     stage: test
+    language: golang
     go:
     - "1.11.x"
     before_install:
@@ -26,6 +25,8 @@ jobs:
     - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 
   - name: build static and deploy
+    stage: build
+    language: golang
     before_install:
     - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
     install:
@@ -45,9 +46,3 @@ jobs:
       - build/tagrelease
       on:
         tags: true
-
-
-
-deploy:
-  provider: releases
-  file: "build/tagrelease"
