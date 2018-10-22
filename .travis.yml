@@ -15,7 +15,7 @@ jobs:
     - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
     - chmod +x ./cc-test-reporter
     - ./cc-test-reporter before-build
-    before_script:
+    install:
     - dep ensure
     script:
     - go test -v ./...
@@ -28,9 +28,11 @@ jobs:
   - name: build static and deploy
     before_install:
     - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
-    before_script:
+    install:
     - dep ensure
     env: CGO_ENABLED=0 GOOS=linux GOARCH=amd64
+    go:
+    - "1.11.x"
     script:
     - go build -a -installsuffix cgo -ldflags="-w -s" -v -o ./build/tagrelease
     cache:
@@ -40,8 +42,7 @@ jobs:
       provider: releases
       skip_cleanup: true
       file:
-        - build/tagrelease
-      if: branch = master
+      - build/tagrelease
       on:
         tags: true
 
