@@ -1,12 +1,44 @@
 language: go
-go:
-  - "1.11.x"
-cache:
-  directories:
-  - vendor/
-before_install:
-  - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
-before_script:
-  - dep ensure
-script:
-  - go test -v ./...
+
+stages:
+- test
+- build
+
+jobs:
+  include:
+  - name: test
+    stage: test
+    go:
+    - "1.11.x"
+    before_install:
+    - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+    before_script:
+    - dep ensure
+    script:
+    - go test -v ./...
+    cache:
+      directories:
+      - vendor/
+  - name: build static and deploy
+    before_install:
+    - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+    before_script:
+    - dep ensure
+    env: CGO_ENABLED=0 GOOS=linux GOARCH=amd64
+    script:
+    - go build -a -installsuffix cgo -ldflags="-w -s" -v -o ./build/tagrelease
+    cache:
+      directories:
+      - vendor/
+    deploy:
+      provider: releases
+      skip_cleanup: true
+      if: branch = master
+      on:
+        tags: true
+
+
+
+deploy:
+  provider: releases
+  file: "build/tagrelease"
