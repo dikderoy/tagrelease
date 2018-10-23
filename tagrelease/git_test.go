@@ -10,12 +10,12 @@ func TestGitAdapter_Version(t *testing.T) {
 
 	variants := map[string]*Version{
 		"":                  {},
-		"0.8.1-84-g57a182a": {0, 8, 1, 84, "g57a182a", ""},
-		"0.0.0":             {0, 0, 0, 0, "", ""},
-		"0.0":               {0, 0, -1, 0, "", ""},
-		"1.0-1-g57a182a":    {1, 0, -1, 1, "g57a182a", ""},
-		"1.0.0-0-g57a182a":  {1, 0, 0, 0, "g57a182a", ""},
-		"v1.0.0-0-g57a182a": {1, 0, 0, 0, "g57a182a", ""},
+		"0.8.1-84-g57a182a": {0, 8, 1, 84, "g57a182a"},
+		"0.0.0":             {0, 0, 0, 0, ""},
+		"0.0":               {0, 0, -1, 0, ""},
+		"1.0-1-g57a182a":    {1, 0, -1, 1, "g57a182a"},
+		"1.0.0-0-g57a182a":  {1, 0, 0, 0, "g57a182a"},
+		"v1.0.0-0-g57a182a": {1, 0, 0, 0, "g57a182a"},
 	}
 
 	for k, expected := range variants {
@@ -43,6 +43,14 @@ func TestGitAdapter_Revision(t *testing.T) {
 	v, _ := a.Revision()
 	t.Log(v)
 	if !refRe.MatchString(v) {
+		t.Fail()
+	}
+}
+
+func TestGitAdapter_Describe(t *testing.T) {
+	a := GitAdapter{}
+	o := a.Describe()
+	if o == "" {
 		t.Fail()
 	}
 }

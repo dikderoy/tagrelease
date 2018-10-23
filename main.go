@@ -39,6 +39,11 @@ func rootCommand() {
 		}
 		defer target.Close()
 	}
+
+	if tagrelease.GlobalConfig.Strategy.Escape != "" {
+		output = tagrelease.EscapeSensitiveChars(output, tagrelease.GlobalConfig.Strategy.Escape)
+	}
+
 	fmt.Fprintln(target, output)
 }
 

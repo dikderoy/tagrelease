@@ -7,24 +7,24 @@ func TestStrategy(t *testing.T) {
 
 	variants := map[string]*Version{
 		StrategyMajor: {
-			major: 1,
-			minor: 0,
-			patch: 0,
+			Major: 1,
+			Minor: 0,
+			Patch: 0,
 		},
 		StrategyMinor: {
-			major: 0,
-			minor: 1,
-			patch: 0,
+			Major: 0,
+			Minor: 1,
+			Patch: 0,
 		},
 		StrategyPatch: {
-			major: 0,
-			minor: 0,
-			patch: 1,
+			Major: 0,
+			Minor: 0,
+			Patch: 1,
 		},
 		StrategyUpstream: {
-			major: 0,
-			minor: 0,
-			patch: 1,
+			Major: 0,
+			Minor: 0,
+			Patch: 1,
 		},
 		StrategyNever: {},
 	}
@@ -48,29 +48,29 @@ func TestStrategy(t *testing.T) {
 
 func TestStrategyWithEmptyPatch(t *testing.T) {
 	proto := Version{
-		patch: -1,
+		Patch: -1,
 	}
 
 	variants := map[string]*Version{
 		StrategyMajor: {
-			major: 1,
-			minor: 0,
-			patch: 0,
+			Major: 1,
+			Minor: 0,
+			Patch: 0,
 		},
 		StrategyMinor: {
-			major: 0,
-			minor: 1,
-			patch: 0,
+			Major: 0,
+			Minor: 1,
+			Patch: 0,
 		},
 		StrategyPatch: {
-			major: 0,
-			minor: 0,
-			patch: 1,
+			Major: 0,
+			Minor: 0,
+			Patch: 1,
 		},
 		StrategyUpstream: {
-			major: 0,
-			minor: 1,
-			patch: 0,
+			Major: 0,
+			Minor: 1,
+			Patch: 0,
 		},
 		StrategyNever: {},
 	}

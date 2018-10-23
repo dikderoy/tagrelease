@@ -11,6 +11,7 @@ import (
 type GitAdapter struct {
 }
 
+// Describe executes and returns output from `git describe --tags`
 func (git *GitAdapter) Describe() (o string) {
 	bo, err := exec.Command("git", "describe", "--tags").Output()
 	if err != nil {
@@ -45,19 +46,20 @@ func (git *GitAdapter) evaluate(desc string) *Version {
 	diff, _ = strconv.Atoi(matches[0][7]) //will return 0 on error (we okay with that)
 
 	return &Version{
-		major:  major,
-		minor:  minor,
-		patch:  patch,
-		diff:   diff,
-		rev:    matches[0][8], //empty value is "" which is exactly what we need
-		suffix: "",
+		Major: major,
+		Minor: minor,
+		Patch: patch,
+		Diff:  diff,
+		Rev:   matches[0][8], //empty value is "" which is exactly what we need
 	}
 }
 
+// Version calls Describe and then evaluate results to populate Version struct
 func (git *GitAdapter) Version() *Version {
 	return git.evaluate(git.Describe())
 }
 
+// Revision executes and returns output from `git rev-parse HEAD`
 func (git *GitAdapter) Revision() (o string, err error) {
 	bo, err := exec.Command("git", "rev-parse", "HEAD").Output()
 	if err != nil {
@@ -68,6 +70,7 @@ func (git *GitAdapter) Revision() (o string, err error) {
 	return strings.TrimSpace(o), nil
 }
 
+// Branch executes and returns output from `git rev-parse --abbrev-ref HEAD`
 func (git *GitAdapter) Branch() (o string, err error) {
 	bo, err := exec.Command("git", "rev-parse", "--abbrev-ref", "HEAD").Output()
 	if err != nil {

@@ -20,25 +20,27 @@ var StrategyList = []string{
 	StrategyNever,
 }
 
+// StrategyFactory creates and returns requested increment strategy function
+// or error if such not defined
 func StrategyFactory(name string) (Strategy, error) {
 	switch name {
 	case StrategyMajor:
 		return func(version *Version) {
-			version.patch = 0
-			version.minor = 0
-			version.major++
+			version.Patch = 0
+			version.Minor = 0
+			version.Major++
 		}, nil
 	case StrategyMinor:
 		return func(version *Version) {
-			version.patch = 0
-			version.minor++
+			version.Patch = 0
+			version.Minor++
 		}, nil
 	case StrategyPatch:
 		return func(version *Version) {
-			if version.patch == -1 {
-				version.patch = 1
+			if version.Patch == -1 {
+				version.Patch = 1
 			} else {
-				version.patch++
+				version.Patch++
 			}
 		}, nil
 	case StrategyUpstream:
@@ -46,18 +48,18 @@ func StrategyFactory(name string) (Strategy, error) {
 		//if not - increment minor,
 		return func(version *Version) {
 			switch {
-			case version.patch == -1:
-				version.patch = 0
-				version.minor++
-			case version.patch > -1:
-				version.patch++
+			case version.Patch == -1:
+				version.Patch = 0
+				version.Minor++
+			case version.Patch > -1:
+				version.Patch++
 			}
 		}, nil
 	case StrategyNever:
 		//do not alter semver in any way
 		return func(version *Version) {
-			if version.patch == -1 {
-				version.patch = 0
+			if version.Patch == -1 {
+				version.Patch = 0
 			}
 		}, nil
 	default:

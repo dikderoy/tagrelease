@@ -20,7 +20,7 @@ func TestConverter_Detect(t *testing.T) {
 	c := prepareConverterWithMockAdapter()
 
 	v := Version{
-		minor: 1,
+		Minor: 1,
 	}
 
 	t.Run("empty", func(t *testing.T) {
@@ -31,7 +31,7 @@ func TestConverter_Detect(t *testing.T) {
 		}
 	})
 	t.Run("not-empty", func(t *testing.T) {
-		c.adapter.(*mockAdapter).version.minor = 1
+		c.adapter.(*mockAdapter).version.Minor = 1
 		r := c.Detect()
 		if v != *r {
 			t.Fail()

@@ -2,7 +2,10 @@ package tagrelease
 
 import (
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	"strconv"
+	"strings"
+	"text/template"
 )
 
 type Formatter struct {
@@ -19,22 +22,25 @@ func NewFormatter(converter *Converter) *Formatter {
 
 //a X.Y.Z (Major.Minor.Patch) formatted version according to SEMVER spec
 func (f *Formatter) SemVer() string {
-	return fmt.Sprintf("%d.%d.%d", f.version.major, f.version.minor, f.version.patch)
+	return fmt.Sprintf("%d.%d.%d", f.version.Major, f.version.Minor, f.version.Patch)
 }
 
 //a X.Y (Major.Minor) formatted version
 func (f *Formatter) Short() string {
-	return fmt.Sprintf("%d.%d", f.version.major, f.version.minor)
+	return fmt.Sprintf("%d.%d", f.version.Major, f.version.Minor)
 }
 
 func (f *Formatter) Major() string {
-	return strconv.Itoa(f.version.major)
+	return strconv.Itoa(f.version.Major)
 }
 func (f *Formatter) Minor() string {
-	return strconv.Itoa(f.version.minor)
+	return strconv.Itoa(f.version.Minor)
 }
 func (f *Formatter) Patch() string {
-	return strconv.Itoa(f.version.patch)
+	return strconv.Itoa(f.version.Patch)
+}
+func (f *Formatter) Diff() string {
+	return strconv.Itoa(f.version.Diff)
 }
 
 func (f *Formatter) ReleaseKind() string {
@@ -46,15 +52,19 @@ func (f *Formatter) Revision() string {
 }
 
 func (f *Formatter) RevisionShort() string {
-	return f.converter.Revision()[:7]
+	rev := f.converter.Revision()
+	if len(rev) < 7 {
+		return rev
+	}
+	return rev[:7]
 }
 
 //a PEP440 compatible release identifier
 func (f *Formatter) PEP440() string {
 	var kind, diff string
-	if f.version.diff > 0 {
+	if f.version.Diff > 0 {
 		kind = f.ReleaseKind()
-		diff = strconv.Itoa(f.version.diff)
+		diff = strconv.Itoa(f.version.Diff)
 	} else {
 		kind = ""
 		diff = ""
@@ -113,6 +123,33 @@ func FormatFactory(fe *Formatter, format string) func() string {
 	case FormatRevShort:
 		return fe.RevisionShort
 	default:
-		return nil
+		// default to custom template (unknown format is processed as custom template)
+		return func() string {
+			return FormatTemplate(fe, format)
+		}
 	}
+}
+
+func FormatTemplate(fe *Formatter, tplSource string) string {
+	tpl, err := template.New("user-supplied").Parse(tplSource)
+	if err != nil {
+		log.WithError(err).Fatal("failed to parse template")
+	}
+	sb := strings.Builder{}
+	err = tpl.Execute(&sb, fe)
+	if err != nil {
+		log.WithError(err).Fatal("failed to execute template")
+	}
+	return sb.String()
+}
+
+var sensitiveChars []string = []string{"/", "+", "-", "~", "*", "@", "#", "!", "^", "$", "%", "&", "(", ")"}
+
+func EscapeSensitiveChars(out string, escChar string) string {
+	var escapee []string
+	for _, x := range sensitiveChars {
+		escapee = append(escapee, x, escChar)
+	}
+	r := strings.NewReplacer(escapee...)
+	return r.Replace(out)
 }

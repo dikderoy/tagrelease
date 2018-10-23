@@ -19,6 +19,7 @@ type Config struct {
 	Strategy struct {
 		Format    string
 		Increment string
+		Escape    string
 	}
 	WorkDir string
 	Output  string
@@ -41,7 +42,10 @@ func DefineConfig() {
 	viper.BindPFlag("Branches.Trunk", flag.Lookup("beta"))
 
 	flag.StringP("format", "f", FormatRelease,
-		fmt.Sprintf("select output format: %v", FormatList))
+		fmt.Sprintf("select output format: %v \n"+
+			"or provide go-template string, available properties are: \n"+
+			".SemVer|.Major|.Minor|.Patch|.Short|.Diff|.Revision|.RevisionShort", FormatList))
+
 	viper.BindPFlag("Strategy.Format", flag.Lookup("format"))
 
 	flag.StringP("increment", "i", StrategyUpstream,
@@ -58,6 +62,12 @@ func DefineConfig() {
 
 	flag.Bool("debug", false, "enable debug output (to stderr)")
 	viper.BindPFlag("Log.Debug", flag.Lookup("debug"))
+
+	flag.StringP("escape", "e", "",
+		"escape conflicting chars, some systems are sensitive to chars like +,/,~"+
+			" and other which may occur in identifiers produced, use this option"+
+			" to escape them with char provided")
+	viper.BindPFlag("Strategy.Escape", flag.Lookup("escape"))
 }
 
 func LoadConfig() {
