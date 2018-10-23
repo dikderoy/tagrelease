@@ -26,7 +26,7 @@ jobs:
 
   - name: build static and deploy
     stage: build
-    if: env(TRAVIS_TAG) is present
+    if: tag IS present
     language: go
     before_install:
     - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
