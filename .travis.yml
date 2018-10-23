@@ -35,11 +35,11 @@ jobs:
     go:
     - 1.11.x
     script:
-    - CGO_ENABLED=0 GOOS=linux GOARCH=amd64
+    - export CGO_ENABLED=0 GOOS=linux GOARCH=amd64
     - go build -a -installsuffix cgo -ldflags="-w -s" -o ./build/tagrelease-$GOOS-$GOARCH
-    - CGO_ENABLED=0 GOOS=darwin GOARCH=amd64
+    - export CGO_ENABLED=0 GOOS=darwin GOARCH=amd64
     - go build -a -installsuffix cgo -ldflags="-w -s" -o ./build/tagrelease-$GOOS-$GOARCH
-    - CGO_ENABLED=0 GOOS=windows GOARCH=amd64
+    - export CGO_ENABLED=0 GOOS=windows GOARCH=amd64
     - go build -a -installsuffix cgo -ldflags="-w -s" -o ./build/tagrelease-$GOOS-$GOARCH
     cache:
       directories:
