@@ -123,14 +123,19 @@ func TestFormatter(t *testing.T) {
 			strategy: strategy,
 		})
 
-		semverExpected := expected(var_data,
+		pep440Expected := expected(var_data,
 			"{{.Ver.Major}}.{{.Ver.Minor}}.{{.Ver.Patch}}"+
 				"{{if ne .RKind \"\" -}} {{.RKind}}{{.Ver.Diff}} {{- end -}}"+
 				"+57a182a")
+
+		semverExpected := expected(var_data,
+			"{{.Ver.Major}}.{{.Ver.Minor}}.{{.Ver.Patch}}"+
+				"{{if ne .RKind \"\" -}} -{{.RKind}}.{{.Ver.Diff}} {{- end -}}"+
+				"+57a182a")
 		variants := map[string]string{
-			FormatRelease:  semverExpected,
-			FormatPEP440:   semverExpected,
-			FormatSemver:   expected(var_data, "{{.Ver.Major}}.{{.Ver.Minor}}.{{.Ver.Patch}}"),
+			FormatRelease:  pep440Expected,
+			FormatPEP440:   pep440Expected,
+			FormatSemver:   semverExpected,
 			FormatShort:    expected(var_data, "{{.Ver.Major}}.{{.Ver.Minor}}"),
 			FormatMajor:    expected(var_data, "{{.Ver.Major}}"),
 			FormatMinor:    expected(var_data, "{{.Ver.Minor}}"),
