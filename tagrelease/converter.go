@@ -46,6 +46,10 @@ func (c *Converter) Detect() (v *Version) {
 		v.Minor = 1
 		return
 	}
+	if v.Diff == 0 {
+		log.Debug("release detected, skip application of increment strategy")
+		return
+	}
 	//use increment strategy
 	c.strategy(v)
 	return

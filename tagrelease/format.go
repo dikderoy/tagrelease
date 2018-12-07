@@ -21,8 +21,28 @@ func NewFormatter(converter *Converter) *Formatter {
 }
 
 //a X.Y.Z (Major.Minor.Patch) formatted version according to SEMVER spec
-func (f *Formatter) SemVer() string {
+func (f *Formatter) XYZ() string {
 	return fmt.Sprintf("%d.%d.%d", f.version.Major, f.version.Minor, f.version.Patch)
+}
+
+//SemVer formats version as extended identifier according to semver 2.0.0 spec
+//a X.Y.Z-kind.diff+commit (ex.: 0.1.1-a.3+b8def90)
+func (f *Formatter) SemVer() string {
+	var kind, diff, release string
+	if f.version.Diff > 0 {
+		kind = "-" + f.ReleaseKind()
+		diff = "." + strconv.Itoa(f.version.Diff)
+	}
+	if !GlobalConfig.Strategy.NoReleaseID {
+		release = "+" + f.RevisionShort()
+	}
+	return fmt.Sprintf(
+		"%s%s%s%s",
+		f.XYZ(),
+		kind,
+		diff,
+		release,
+	)
 }
 
 //a X.Y (Major.Minor) formatted version
@@ -61,26 +81,27 @@ func (f *Formatter) RevisionShort() string {
 
 //a PEP440 compatible release identifier
 func (f *Formatter) PEP440() string {
-	var kind, diff string
+	var kind, diff, release string
 	if f.version.Diff > 0 {
 		kind = f.ReleaseKind()
 		diff = strconv.Itoa(f.version.Diff)
-	} else {
-		kind = ""
-		diff = ""
+	}
+	if !GlobalConfig.Strategy.NoReleaseID {
+		release = "+" + f.RevisionShort()
 	}
 	return fmt.Sprintf(
-		"%s%s%s+%s",
-		f.SemVer(),
+		"%s%s%s%s",
+		f.XYZ(),
 		kind,
 		diff,
-		f.RevisionShort(),
+		release,
 	)
 }
 
 const (
 	FormatRelease  = "release"
 	FormatPEP440   = "pep440"
+	FormatXYZ      = "xyz"
 	FormatSemver   = "semver"
 	FormatShort    = "short"
 	FormatMajor    = StrategyMajor
@@ -93,6 +114,7 @@ const (
 var FormatList = []string{
 	FormatRelease,
 	FormatPEP440,
+	FormatXYZ,
 	FormatSemver,
 	FormatShort,
 	FormatMajor,
@@ -110,6 +132,8 @@ func FormatFactory(fe *Formatter, format string) func() string {
 		return fe.PEP440
 	case FormatSemver:
 		return fe.SemVer
+	case FormatXYZ:
+		return fe.XYZ
 	case FormatShort:
 		return fe.Short
 	case FormatMajor:
@@ -143,7 +167,7 @@ func FormatTemplate(fe *Formatter, tplSource string) string {
 	return sb.String()
 }
 
-var sensitiveChars []string = []string{"/", "+", "-", "~", "*", "@", "#", "!", "^", "$", "%", "&", "(", ")"}
+var sensitiveChars = []string{"/", "+", "-", "~", "*", "@", "#", "!", "^", "$", "%", "&", "(", ")"}
 
 func EscapeSensitiveChars(out string, escChar string) string {
 	var escapee []string

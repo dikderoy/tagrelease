@@ -17,9 +17,10 @@ type Config struct {
 		Trunk  []string
 	}
 	Strategy struct {
-		Format    string
-		Increment string
-		Escape    string
+		Format      string
+		NoReleaseID bool
+		Increment   string
+		Escape      string
 	}
 	WorkDir string
 	Output  string
@@ -44,9 +45,13 @@ func DefineConfig() {
 	flag.StringP("format", "f", FormatRelease,
 		fmt.Sprintf("select output format: %v \n"+
 			"or provide go-template string, available properties are: \n"+
-			".SemVer|.Major|.Minor|.Patch|.Short|.Diff|.Revision|.RevisionShort", FormatList))
+			".XYZ|.Major|.Minor|.Patch|.Short|.Diff|.Revision|.RevisionShort", FormatList))
 
 	viper.BindPFlag("Strategy.Format", flag.Lookup("format"))
+
+	flag.BoolP("no-release", "r", false,
+		"remove release-id (commit-hash) in formats which support them, like PEP440 and SemVer")
+	viper.BindPFlag("Strategy.NoReleaseID", flag.Lookup("no-release"))
 
 	flag.StringP("increment", "i", StrategyUpstream,
 		fmt.Sprintf("select increment strategy: %v", StrategyList))
