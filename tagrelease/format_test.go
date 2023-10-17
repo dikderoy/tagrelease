@@ -127,12 +127,12 @@ func TestFormatter(t *testing.T) {
 		pep440Expected := expected(varData,
 			"{{.Ver.Major}}.{{.Ver.Minor}}.{{.Ver.Patch}}"+
 				"{{if ne .RKind \"\" -}} {{.RKind}}{{.Ver.Diff}} {{- end -}}"+
-				"+57a182a")
+				"+57a182a5")
 
 		semverExpected := expected(varData,
 			"{{.Ver.Major}}.{{.Ver.Minor}}.{{.Ver.Patch}}"+
 				"{{if ne .RKind \"\" -}} -{{.RKind}}.{{.Ver.Diff}} {{- end -}}"+
-				"+57a182a")
+				"+57a182a5")
 		variants := map[string]string{
 			FormatRelease:  pep440Expected,
 			FormatPEP440:   pep440Expected,
@@ -142,7 +142,7 @@ func TestFormatter(t *testing.T) {
 			FormatMinor:    expected(varData, "{{.Ver.Minor}}"),
 			FormatPatch:    expected(varData, "{{.Ver.Patch}}"),
 			FormatRevision: varData.Rev,
-			FormatRevShort: varData.Rev[:7],
+			FormatRevShort: varData.Rev[:8],
 
 			"{{.Major}}+{{.Diff}}": expected(varData, "{{.Ver.Major}}+{{.Ver.Diff}}"),
 		}

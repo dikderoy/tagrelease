@@ -74,10 +74,10 @@ func (f *Formatter) Revision() string {
 
 func (f *Formatter) RevisionShort() string {
 	rev := f.converter.Revision()
-	if len(rev) < 7 {
+	if len(rev) < 8 {
 		return rev
 	}
-	return rev[:7]
+	return rev[:8]
 }
 
 // PEP440 - a PEP440 compatible release identifier
