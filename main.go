@@ -2,11 +2,13 @@ package main
 
 import (
 	"fmt"
-	"github.com/dikderoy/tagrelease/tagrelease"
-	"github.com/sirupsen/logrus"
-	flag "github.com/spf13/pflag"
 	"io"
 	"os"
+
+	"github.com/sirupsen/logrus"
+	flag "github.com/spf13/pflag"
+
+	"github.com/dikderoy/tagrelease/tagrelease"
 )
 
 func rootCommand() {
@@ -37,14 +39,14 @@ func rootCommand() {
 		if err != nil {
 			logrus.WithError(err).Fatal("cannot open target")
 		}
-		defer target.Close()
+		defer func() { _ = target.Close() }()
 	}
 
 	if tagrelease.GlobalConfig.Strategy.Escape != "" {
 		output = tagrelease.EscapeSensitiveChars(output, tagrelease.GlobalConfig.Strategy.Escape)
 	}
 
-	fmt.Fprintln(target, output)
+	_, _ = fmt.Fprintln(target, output)
 }
 
 func main() {

@@ -1,10 +1,11 @@
 package tagrelease
 
 import (
-	log "github.com/sirupsen/logrus"
 	"strings"
 	"testing"
 	"text/template"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type mockAdapter struct {
@@ -39,10 +40,10 @@ func expected(data *vbr, tpl string) string {
 }
 
 type vbr struct {
-	Ver    *Version //version variant
-	Branch string   //branch variant
-	Rev    string   //revision variant
-	RKind  string   //expected release kind
+	Ver    *Version // version variant
+	Branch string   // branch variant
+	Rev    string   // revision variant
+	RKind  string   // expected release kind
 }
 
 func TestFormatter(t *testing.T) {
@@ -113,22 +114,22 @@ func TestFormatter(t *testing.T) {
 		},
 	}
 
-	for vbr_k, var_data := range versionVariants {
+	for vbrK, varData := range versionVariants {
 		f := NewFormatter(&Converter{
 			adapter: &mockAdapter{
-				version:  var_data.Ver,
-				branch:   var_data.Branch,
-				revision: var_data.Rev,
+				version:  varData.Ver,
+				branch:   varData.Branch,
+				revision: varData.Rev,
 			},
 			strategy: strategy,
 		})
 
-		pep440Expected := expected(var_data,
+		pep440Expected := expected(varData,
 			"{{.Ver.Major}}.{{.Ver.Minor}}.{{.Ver.Patch}}"+
 				"{{if ne .RKind \"\" -}} {{.RKind}}{{.Ver.Diff}} {{- end -}}"+
 				"+57a182a")
 
-		semverExpected := expected(var_data,
+		semverExpected := expected(varData,
 			"{{.Ver.Major}}.{{.Ver.Minor}}.{{.Ver.Patch}}"+
 				"{{if ne .RKind \"\" -}} -{{.RKind}}.{{.Ver.Diff}} {{- end -}}"+
 				"+57a182a")
@@ -136,18 +137,18 @@ func TestFormatter(t *testing.T) {
 			FormatRelease:  pep440Expected,
 			FormatPEP440:   pep440Expected,
 			FormatSemver:   semverExpected,
-			FormatShort:    expected(var_data, "{{.Ver.Major}}.{{.Ver.Minor}}"),
-			FormatMajor:    expected(var_data, "{{.Ver.Major}}"),
-			FormatMinor:    expected(var_data, "{{.Ver.Minor}}"),
-			FormatPatch:    expected(var_data, "{{.Ver.Patch}}"),
-			FormatRevision: var_data.Rev,
-			FormatRevShort: var_data.Rev[:7],
+			FormatShort:    expected(varData, "{{.Ver.Major}}.{{.Ver.Minor}}"),
+			FormatMajor:    expected(varData, "{{.Ver.Major}}"),
+			FormatMinor:    expected(varData, "{{.Ver.Minor}}"),
+			FormatPatch:    expected(varData, "{{.Ver.Patch}}"),
+			FormatRevision: varData.Rev,
+			FormatRevShort: varData.Rev[:7],
 
-			"{{.Major}}+{{.Diff}}": expected(var_data, "{{.Ver.Major}}+{{.Ver.Diff}}"),
+			"{{.Major}}+{{.Diff}}": expected(varData, "{{.Ver.Major}}+{{.Ver.Diff}}"),
 		}
 
 		for k, expected := range variants {
-			t.Run(vbr_k+"|"+k, func(t *testing.T) {
+			t.Run(vbrK+"|"+k, func(t *testing.T) {
 				format := FormatFactory(f, k)
 				received := format()
 				if received != expected {
