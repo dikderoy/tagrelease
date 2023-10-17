@@ -44,8 +44,8 @@ func StrategyFactory(name string) (Strategy, error) {
 			}
 		}, nil
 	case StrategyUpstream:
-		//if patch present - increment patch,
-		//if not - increment minor,
+		// if patch present - increment patch,
+		// if not - increment minor,
 		return func(version *Version) {
 			switch {
 			case version.Patch == -1:
@@ -56,7 +56,7 @@ func StrategyFactory(name string) (Strategy, error) {
 			}
 		}, nil
 	case StrategyNever:
-		//do not alter semver in any way
+		// do not alter semver in any way
 		return func(version *Version) {
 			if version.Patch == -1 {
 				version.Patch = 0

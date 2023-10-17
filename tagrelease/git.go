@@ -1,11 +1,12 @@
 package tagrelease
 
 import (
-	log "github.com/sirupsen/logrus"
 	"os/exec"
 	"regexp"
 	"strconv"
 	"strings"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type GitAdapter struct {
@@ -38,19 +39,19 @@ func (git *GitAdapter) evaluate(desc string) *Version {
 	var major, minor, patch, diff int
 	major, _ = strconv.Atoi(matches[0][2])
 	minor, _ = strconv.Atoi(matches[0][3])
-	if matches[0][4] != "" { // we need to know if patch is not defined
+	if matches[0][4] != "" { // we need to know if a patch is not defined
 		patch, _ = strconv.Atoi(matches[0][5])
 	} else {
 		patch = -1
 	}
-	diff, _ = strconv.Atoi(matches[0][7]) //will return 0 on error (we okay with that)
+	diff, _ = strconv.Atoi(matches[0][7]) // will return 0 on error (we are okay with that)
 
 	return &Version{
 		Major: major,
 		Minor: minor,
 		Patch: patch,
 		Diff:  diff,
-		Rev:   matches[0][8], //empty value is "" which is exactly what we need
+		Rev:   matches[0][8], // empty value is "" which is exactly what we need
 	}
 }
 

@@ -5,7 +5,6 @@ TagRelease
 [![Maintainability](https://api.codeclimate.com/v1/badges/c0a9e573b147851c927a/maintainability)](https://codeclimate.com/github/dikderoy/tagrelease/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/c0a9e573b147851c927a/test_coverage)](https://codeclimate.com/github/dikderoy/tagrelease/test_coverage)
 
-
 `tagrelease` is a simple tool to generate release/build
 identifiers from git tag names in an automated way.
 
@@ -56,20 +55,20 @@ select output format (default `release`):
 
 - `release` - alias for pep440
 - `pep440` - output a release string according to PEP440 format:
-    `{major}.{minor}.{patch}[{kind(rc|b|a)}{diff}][+{revshort}]`
-    example: `0.1.0+8f70f9c`, `0.8.2a84+57a182a`
+  `{major}.{minor}.{patch}[{kind(rc|b|a)}{diff}][+{revshort}]`
+  example: `0.1.0+8f70f9c`, `0.8.2a84+57a182a`
 - `semver` - semver release format:
-    `{major}.{minor}.{patch}`
-    example: `1.2.3`
+  `{major}.{minor}.{patch}`
+  example: `1.2.3`
 - `short` - format: `{major}.{minor}`
-    example: `1.2`
+  example: `1.2`
 - `major` - output only major version
 - `minor` - output only minor version
 - `patch` - output only patch version
 - `revision` - full git revision (40 chars)
-    example: `57a182a871e042022c22b14ad6314b0618b582f8`
+  example: `57a182a871e042022c22b14ad6314b0618b582f8`
 - `revshort` - short git revision (7 chars)
-    example: `57a182a`
+  example: `57a182a`
 
 ---
 

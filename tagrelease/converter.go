@@ -50,7 +50,7 @@ func (c *Converter) Detect() (v *Version) {
 		log.Debug("release detected, skip application of increment strategy")
 		return
 	}
-	//use increment strategy
+	// use increment strategy
 	c.strategy(v)
 	return
 }

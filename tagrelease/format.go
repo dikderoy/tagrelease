@@ -2,10 +2,11 @@ package tagrelease
 
 import (
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"strconv"
 	"strings"
 	"text/template"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type Formatter struct {
@@ -20,13 +21,13 @@ func NewFormatter(converter *Converter) *Formatter {
 	}
 }
 
-//a X.Y.Z (Major.Minor.Patch) formatted version according to SEMVER spec
+// XYZ - a X.Y.Z (Major.Minor.Patch) formatted version according to SEMVER spec
 func (f *Formatter) XYZ() string {
 	return fmt.Sprintf("%d.%d.%d", f.version.Major, f.version.Minor, f.version.Patch)
 }
 
-//SemVer formats version as extended identifier according to semver 2.0.0 spec
-//a X.Y.Z-kind.diff+commit (ex.: 0.1.1-a.3+b8def90)
+// SemVer formats a version as extended identifier according to semver 2.0.0 spec
+// a X.Y.Z-kind.diff+commit (ex.: 0.1.1-a.3+b8def90)
 func (f *Formatter) SemVer() string {
 	var kind, diff, release string
 	if f.version.Diff > 0 {
@@ -45,7 +46,7 @@ func (f *Formatter) SemVer() string {
 	)
 }
 
-//a X.Y (Major.Minor) formatted version
+// Short - an X.Y (Major.Minor) formatted version
 func (f *Formatter) Short() string {
 	return fmt.Sprintf("%d.%d", f.version.Major, f.version.Minor)
 }
@@ -79,7 +80,7 @@ func (f *Formatter) RevisionShort() string {
 	return rev[:7]
 }
 
-//a PEP440 compatible release identifier
+// PEP440 - a PEP440 compatible release identifier
 func (f *Formatter) PEP440() string {
 	var kind, diff, release string
 	if f.version.Diff > 0 {
@@ -147,7 +148,7 @@ func FormatFactory(fe *Formatter, format string) func() string {
 	case FormatRevShort:
 		return fe.RevisionShort
 	default:
-		// default to custom template (unknown format is processed as custom template)
+		// default to custom template (an unknown format is processed as custom template)
 		return func() string {
 			return FormatTemplate(fe, format)
 		}

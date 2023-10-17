@@ -2,10 +2,11 @@ package tagrelease
 
 import (
 	"fmt"
+	"os"
+
 	log "github.com/sirupsen/logrus"
 	flag "github.com/spf13/pflag"
 	"github.com/spf13/viper"
-	"os"
 )
 
 type Config struct {
@@ -35,44 +36,44 @@ func DefineConfig() {
 		"provide list of branches recognized as mainstream,"+
 			" all releases on these branches will be marked as RC (release candidate),"+
 			" except tagged ones")
-	viper.BindPFlag("Branches.Master", flag.Lookup("rc"))
+	_ = viper.BindPFlag("Branches.Master", flag.Lookup("rc"))
 
 	flag.StringSlice("beta", []string{"trunk"},
 		"provide list of branches recognized as trunked,"+
 			" all releases on these branches will be marked as B (beta), except tagged ones")
-	viper.BindPFlag("Branches.Trunk", flag.Lookup("beta"))
+	_ = viper.BindPFlag("Branches.Trunk", flag.Lookup("beta"))
 
 	flag.StringP("format", "f", FormatRelease,
 		fmt.Sprintf("select output format: %v \n"+
 			"or provide go-template string, available properties are: \n"+
 			".XYZ|.Major|.Minor|.Patch|.Short|.Diff|.Revision|.RevisionShort", FormatList))
 
-	viper.BindPFlag("Strategy.Format", flag.Lookup("format"))
+	_ = viper.BindPFlag("Strategy.Format", flag.Lookup("format"))
 
 	flag.BoolP("no-release", "r", false,
 		"remove release-id (commit-hash) in formats which support them, like PEP440 and SemVer")
-	viper.BindPFlag("Strategy.NoReleaseID", flag.Lookup("no-release"))
+	_ = viper.BindPFlag("Strategy.NoReleaseID", flag.Lookup("no-release"))
 
 	flag.StringP("increment", "i", StrategyUpstream,
 		fmt.Sprintf("select increment strategy: %v", StrategyList))
-	viper.BindPFlag("Strategy.Increment", flag.Lookup("increment"))
+	_ = viper.BindPFlag("Strategy.Increment", flag.Lookup("increment"))
 
 	flag.StringP("workdir", "d", ".",
 		"select workdir to look for repository")
-	viper.BindPFlag("WorkDir", flag.Lookup("workdir"))
+	_ = viper.BindPFlag("WorkDir", flag.Lookup("workdir"))
 
 	flag.StringP("output", "o", "-",
 		"select output target, default is stdout")
-	viper.BindPFlag("Output", flag.Lookup("output"))
+	_ = viper.BindPFlag("Output", flag.Lookup("output"))
 
 	flag.Bool("debug", false, "enable debug output (to stderr)")
-	viper.BindPFlag("Log.Debug", flag.Lookup("debug"))
+	_ = viper.BindPFlag("Log.Debug", flag.Lookup("debug"))
 
 	flag.StringP("escape", "e", "",
 		"escape conflicting chars, some systems are sensitive to chars like +,/,~"+
 			" and other which may occur in identifiers produced, use this option"+
 			" to escape them with char provided")
-	viper.BindPFlag("Strategy.Escape", flag.Lookup("escape"))
+	_ = viper.BindPFlag("Strategy.Escape", flag.Lookup("escape"))
 }
 
 func LoadConfig() {
